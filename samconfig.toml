@@ -1,0 +1,12 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "nft-scam-predictor-stack"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1dznr37onm9nt"
+s3_prefix = "nft-scam-predictor-stack"
+region = "eu-central-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+disable_rollback = true
+image_repositories = ["InferenceFunction=692666379301.dkr.ecr.eu-central-1.amazonaws.com/nftscampredictorstackedd0c332/inferencefunction7c73919drepo"]
