@@ -6,7 +6,7 @@ from sol.rpc import Endpoint, SolanaRpcClient
 
 model_file = "/opt/ml/model"
 model = NftScamModel(model_file, device="cpu")
-client = SolanaRpcClient.from_endpoint(endpoint=Endpoint.MainnetBeta)
+client = SolanaRpcClient.from_endpoint(endpoint=Endpoint.Mainnet)
 
 
 def is_valid_token_length(token_address):

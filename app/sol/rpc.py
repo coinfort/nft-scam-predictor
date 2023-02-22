@@ -11,7 +11,10 @@ from solana.rpc.api import Client as SolanaClient
 
 class Endpoint(enum.Enum):
     ChainStack = "https://nd-209-102-701.p2pify.com/6081256af612c08bf51b0c0ab56924db"  # TODO: Extract to `.env `file
-    MainnetBeta = "https://api.mainnet-beta.solana.com"
+    Ankr = "https://rpc.ankr.com/solana"
+    Mainnet = "https://api.mainnet-beta.solana.com"
+    Testnet = "https://api.testnet.solana.com"
+    Devnet = "https://api.devnet.solana.com"
 
 
 def try_except_handler(func):
@@ -38,7 +41,7 @@ class SolanaRpcClient:
         self.client = SolanaClient(endpoint=url)
 
     @staticmethod
-    def from_endpoint(endpoint: Endpoint = Endpoint.MainnetBeta) -> "SolanaRpcClient":
+    def from_endpoint(endpoint: Endpoint = Endpoint.Mainnet) -> "SolanaRpcClient":
         return SolanaRpcClient(endpoint.value)
 
     @try_except_handler
