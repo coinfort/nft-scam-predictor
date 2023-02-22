@@ -244,3 +244,9 @@ $RECYCLE.BIN/
 
 app/resources
 .aws-sam
+
+# Resources
+resources
+
+# Idea files
+.idea
