@@ -19,5 +19,9 @@ tqdm==4.64.1
 transformers==4.26.0
 typing_extensions==4.4.0
 solana==0.18.1
+dict_hash==1.1.29
+psycopg2-binary==2.9.5
+sqlalchemy==2.0.4
 python-dotenv
 result
+pydantic

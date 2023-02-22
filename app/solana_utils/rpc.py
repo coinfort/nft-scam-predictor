@@ -2,15 +2,17 @@ import base64
 import enum
 
 import requests
+from config import settings
+from entities.nft_metadata import NftMetaplexMetadata, NftUriMetadata
 from result import Err, Ok, Result
-from sol.datatypes import MetaplexMetadata, UriMetadata
-from sol.metaplex.metadata import get_metadata_account, parse_metadata_bytes
 from solana.publickey import PublicKey
 from solana.rpc.api import Client as SolanaClient
+from solana_utils.metaplex.metadata import (get_metadata_account,
+                                            parse_metadata_bytes)
 
 
 class Endpoint(enum.Enum):
-    ChainStack = "https://nd-209-102-701.p2pify.com/6081256af612c08bf51b0c0ab56924db"  # TODO: Extract to `.env `file
+    ChainStack = settings.CHAINSTACK_NODE_URL
     Ankr = "https://rpc.ankr.com/solana"
     Mainnet = "https://api.mainnet-beta.solana.com"
     Testnet = "https://api.testnet.solana.com"
@@ -45,7 +47,7 @@ class SolanaRpcClient:
         return SolanaRpcClient(endpoint.value)
 
     @try_except_handler
-    def nft_metadata(self, token_id: str) -> Result[MetaplexMetadata, Exception]:
+    def nft_metadata(self, token_id: str) -> Result[NftMetaplexMetadata, Exception]:
         mint_pk = PublicKey(token_id)
         account = get_metadata_account(mint_pk)
         info = self.client.get_account_info(account)
@@ -54,14 +56,15 @@ class SolanaRpcClient:
         return metadata
 
     @try_except_handler
-    def nft_uri_metadata(self, uri: str) -> Result[UriMetadata, Exception]:
+    def nft_uri_metadata(self, uri: str) -> Result[NftUriMetadata, Exception]:
         data = requests.get(uri).json()
 
-        metadata = UriMetadata(
+        metadata = NftUriMetadata(
             image=data.get("image"),
             description=data.get("description"),
-            external_url=data.get("external_url")
+            external_uri=data.get("external_url")
         )
+
         return metadata
 
     def __repr__(self):
