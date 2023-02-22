@@ -3,7 +3,7 @@ import enum
 
 import requests
 from config import settings
-from entities.nft_metadata import NftMetaplexMetadata, NftUriMetadata
+from entities.nft.metadata import NftMetaplexMetadata, NftUriMetadata
 from result import Err, Ok, Result
 from solana.publickey import PublicKey
 from solana.rpc.api import Client as SolanaClient

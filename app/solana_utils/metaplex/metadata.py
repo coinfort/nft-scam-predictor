@@ -1,7 +1,7 @@
 import struct
 
 import base58
-from entities.nft_metadata import *
+from entities.nft.metadata import *
 from solana.publickey import PublicKey
 from solana_utils.programs import *
 

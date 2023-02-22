@@ -1,1 +1,1 @@
-from .nft_metadata import *
+from entities.nft.metadata import *
