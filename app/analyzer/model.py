@@ -41,8 +41,13 @@ class NftScamModel:
 
         return inputs
 
-    def inputs_to_device(self, inputs: tp.Dict[str, torch.Tensor]) -> tp.Dict[str, torch.Tensor]:
+    def inputs_to_device(
+            self,
+            inputs: tp.Dict[str, torch.Tensor]
+    ) -> tp.Dict[str, torch.Tensor]:
         return {key: tensor.to(self.device) for key, tensor in inputs.items()}
 
 
-__all__ = ["NftScamModel"]
+__all__ = [
+    "NftScamModel"
+]
