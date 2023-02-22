@@ -1,9 +1,9 @@
 import struct
 
 import base58
-from sol.datatypes import *
-from sol.programs import *
+from entities.nft_metadata import *
 from solana.publickey import PublicKey
+from solana_utils.programs import *
 
 
 def get_metadata_account(mint_key: PublicKey) -> PublicKey:
@@ -69,18 +69,18 @@ def parse_metadata_bytes(data: bytes):
     is_mutable = bool(data[i])
 
     creators = [
-        Creator(address=c.hex(), verified=v, share=s) for c, v, s in zip(creator_accounts, verified, share)
+        NftCreator(address=c.hex(), verified=v, share=s) for c, v, s in zip(creator_accounts, verified, share)
     ]
 
-    internal_data = ChainData(
-        name=name.decode("utf-8").strip("\x00"),
+    internal_data = NftChainData(
+        title=name.decode("utf-8").strip("\x00"),
         symbol=symbol.decode("utf-8").strip("\x00"),
         uri=uri.decode("utf-8").strip("\x00"),
         seller_fee_basis_points=fee,
         creators=creators
     )
 
-    metadata = MetaplexMetadata(
+    metadata = NftMetaplexMetadata(
         update_authority=source_account.decode("utf-8"),
         mint=mint_account.decode("utf-8"),
         data=internal_data,
