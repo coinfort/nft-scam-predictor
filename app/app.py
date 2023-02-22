@@ -2,7 +2,7 @@ import json
 
 from analyzer.model import NftScamModel
 from analyzer.analyzer import check_nft_token
-from app.analyzer.check_state import Response
+from analyzer.check_state import Response
 
 model_file = '/opt/ml/model'
 model = NftScamModel(model_file, device="cpu")

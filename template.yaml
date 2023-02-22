@@ -1,6 +1,11 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 
+Parameters:
+  Stage:
+    Type: String
+    Default: Dev
+
 Globals:
   Function:
     Timeout: 50
@@ -10,6 +15,10 @@ Globals:
     TracingEnabled: true
 
 Resources:
+  ApiDeployment:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: !Ref Stage
   InferenceFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
@@ -22,6 +31,7 @@ Resources:
           Properties:
             Path: /nft_scam_classify
             Method: post
+            RestApiId: !Ref ApiDeployment
     Metadata:
       Dockerfile: Dockerfile
       DockerContext: ./app
@@ -52,8 +62,8 @@ Outputs:
   # Find out more about other implicit resources you can reference within SAM
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
   InferenceApi:
-    Description: API Gateway endpoint URL for Prod stage for Inference function
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/nft_scam_classify/"
+    Description: API Gateway endpoint URL for stage for Inference function
+    Value: !Sub "https://${ApiDeployment}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/nft_scam_classify/"
   InferenceFunction:
     Description: Inference Lambda Function ARN
     Value: !GetAtt InferenceFunction.Arn
