@@ -1,4 +1,4 @@
-from result import Err, Ok, Result
+from result import Err, Ok
 
 
 def handler(func):
