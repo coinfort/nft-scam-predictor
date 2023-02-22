@@ -8,7 +8,8 @@ from solana.publickey import PublicKey
 
 def get_metadata_account(mint_key: PublicKey) -> PublicKey:
     seeds = [b"metadata", bytes(METADATA_PROGRAM_ID), bytes(mint_key)]
-    return PublicKey.find_program_address(seeds, METADATA_PROGRAM_ID)[0]
+    pda, _ = PublicKey.find_program_address(seeds, METADATA_PROGRAM_ID)
+    return pda
 
 
 def unpack_struct(data: bytes, start: int, length: int) -> bytes:
