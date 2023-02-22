@@ -22,3 +22,5 @@ solana==0.18.1
 dict_hash==1.1.29
 psycopg2-binary==2.9.5
 sqlalchemy==2.0.4
+python-dotenv
+result

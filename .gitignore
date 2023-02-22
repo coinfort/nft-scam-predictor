@@ -240,7 +240,9 @@ $RECYCLE.BIN/
 
 */build/*
 
-# End of https://www.gitignore.io/api/osx,linux,python,windows,pycharm,visualstudiocode
-
+# Resources and AWS files
 app/resources
 .aws-sam
+
+# Idea files
+.idea
