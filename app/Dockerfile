@@ -5,6 +5,6 @@ COPY resources/bert-scam-nft /opt/ml/model
 
 RUN python3.9 -m pip install -r requirements.txt -t .
 
-COPY . .
+COPY . /app
 
 CMD ["app.lambda_handler"]

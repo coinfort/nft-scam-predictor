@@ -1,10 +1,9 @@
 import struct
 
 import base58
+from sol.datatypes import *
+from sol.programs import *
 from solana.publickey import PublicKey
-
-from ..datatypes import *
-from ..programs import *
 
 
 def get_metadata_account(mint_key: PublicKey) -> PublicKey:

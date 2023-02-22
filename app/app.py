@@ -1,6 +1,6 @@
 import json
 
-from analyzer.analyzer import check_nft_token, NFTScamResponse
+from analyzer.analyzer import NFTScamResponse, check_nft_token
 from analyzer.model import NftScamModel
 from sol.rpc import Endpoint, SolanaRpcClient
 

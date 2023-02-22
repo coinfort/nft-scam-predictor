@@ -1,7 +1,7 @@
 from enum import Enum
 
-from ..sol.rpc import SolanaRpcClient
-from .model import NftScamModel
+from analyzer.model import NftScamModel
+from sol.rpc import SolanaRpcClient
 
 
 class NFTScamResponse(Enum):

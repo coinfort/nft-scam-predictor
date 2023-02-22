@@ -3,11 +3,10 @@ import enum
 
 import requests
 from result import Err, Ok, Result
+from sol.datatypes import MetaplexMetadata, UriMetadata
+from sol.metaplex.metadata import get_metadata_account, parse_metadata_bytes
 from solana.publickey import PublicKey
 from solana.rpc.api import Client as SolanaClient
-
-from .datatypes import MetaplexMetadata, UriMetadata
-from .metaplex.metadata import get_metadata_account, parse_metadata_bytes
 
 
 class Endpoint(enum.Enum):
