@@ -4,7 +4,7 @@ import torch
 from transformers import BertForSequenceClassification, BertTokenizerFast
 
 
-class NftScamModel:
+class NftScamClassifierModel:
     def __init__(self, model_path: str, device="cpu"):
         self.device = torch.device(device)
 
@@ -49,5 +49,5 @@ class NftScamModel:
 
 
 __all__ = [
-    "NftScamModel"
+    "NftScamClassifierModel"
 ]
