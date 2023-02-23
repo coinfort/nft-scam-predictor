@@ -28,19 +28,19 @@ class NftChainData:
 
 @dataclasses.dataclass
 class NftMetaplexMetadata:
-    update_authority: str
-    mint: str
-    data: NftChainData
-    is_mutable: bool
-    primary_sale_happened: bool
-    collection: tp.Optional[NftCollectionReference]
+    update_authority: tp.Optional[str] = None
+    mint: tp.Optional[str] = None
+    data: tp.Optional[NftChainData] = None
+    is_mutable: tp.Optional[bool] = None
+    primary_sale_happened: tp.Optional[bool] = None
+    collection: tp.Optional[NftCollectionReference] = None
 
 
 @dataclasses.dataclass
 class NftUriMetadata:
-    image: tp.Optional[str]
-    description: tp.Optional[str]
-    external_uri: tp.Optional[str]
+    image: tp.Optional[str] = None
+    description: tp.Optional[str] = None
+    external_uri: tp.Optional[str] = None
 
 
 @dataclasses.dataclass
