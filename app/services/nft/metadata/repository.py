@@ -3,6 +3,7 @@ import typing as tp
 
 from db.connection import get_db
 from entities import NftMetadata as INftMeta
+from entities.model import NftScamResponse
 
 from .table import NftMetadata
 
@@ -11,7 +12,7 @@ class NftMetadataRepository:
     def __init__(self):
         self.db = get_db()
 
-    def save_nft_metadata(self, metadata: INftMeta):
+    def save_nft_metadata(self, metadata: INftMeta, result: NftScamResponse):
         metaplex_metadata = metadata.metaplex_metadata
         uri_metadata = metadata.uri_metadata
 
@@ -31,7 +32,8 @@ class NftMetadataRepository:
             image=uri_metadata.image,
             symbol=metaplex_metadata.data.symbol,
             external_uri=uri_metadata.external_uri,
-            created_at=datetime.datetime.utcnow()
+            created_at=datetime.datetime.utcnow(),
+            predict_result=result.value
         )
 
         self.db.add(nft)
