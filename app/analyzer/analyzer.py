@@ -1,7 +1,12 @@
+import datetime
+
 from analyzer.model import NftScamClassifierModel
-from entities import NftMetadata, NftMetaplexMetadata, NftUriMetadata
+from entities import NftMetaplexMetadata, NftUriMetadata, metadata_hash
 from entities.model import NftScamResponse
 from services.nft import nft_metadata_repository
+from services.nft.metadata.dto import (CreateNftMetadataDto,
+                                       NftMetadataTokenHashDto,
+                                       UpdateNftMetadataTimestampDto)
 from solana_utils.rpc import SolanaRpcClient
 
 
@@ -12,7 +17,6 @@ def check_nft_token(
 ) -> NftScamResponse:
     metaplex_metadata_value = NftMetaplexMetadata()
     uri_metadata_value = NftUriMetadata()
-    description = None
     result = NftScamResponse.WRONG_INPUT
 
     metaplex_metadata = client.nft_metadata(token_id)
@@ -21,23 +25,34 @@ def check_nft_token(
         uri_metadata = client.nft_uri_metadata(metaplex_metadata_value.data.uri)
         if uri_metadata.is_ok():
             uri_metadata_value = uri_metadata.ok()
-            description = uri_metadata_value.description
 
-    metadata = NftMetadata(
-        token_id=token_id,
-        metaplex_metadata=metaplex_metadata_value,
-        uri_metadata=uri_metadata_value
-    )
+    description = uri_metadata_value.description
 
     if description is not None:
         is_scam = model.check_scam([description])[0]
         result = NftScamResponse.SCAM if is_scam else NftScamResponse.NOT_SCAM
 
-    exists = nft_metadata_repository.exists(token_id=token_id, meta_hash=metadata.sha256())
+    meta_hash = metadata_hash(metaplex_metadata_value, uri_metadata_value)
+
+    exists = nft_metadata_repository.exists(
+        NftMetadataTokenHashDto(token_id=token_id, hash=meta_hash)
+    )
 
     if not exists:
-        nft_metadata_repository.save_nft_metadata(metadata, result)
+        dto = CreateNftMetadataDto(
+            token_id=token_id,
+            hash=meta_hash,
+            metaplex_metadata=metaplex_metadata_value,
+            uri_metadata=uri_metadata_value,
+            result=result
+        )
+        nft_metadata_repository.save_nft_metadata(dto)
     else:
-        pass  # add update time
+        dto = UpdateNftMetadataTimestampDto(
+            token_id=token_id,
+            hash=meta_hash,
+            time=datetime.datetime.utcnow()
+        )
+        nft_metadata_repository.update_timestamp(dto)
 
     return result

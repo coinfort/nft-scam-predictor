@@ -43,14 +43,16 @@ class NftUriMetadata:
     external_uri: tp.Optional[str] = None
 
 
-@dataclasses.dataclass
-class NftMetadata:
-    token_id: str
-    metaplex_metadata: NftMetaplexMetadata
-    uri_metadata: NftUriMetadata
+def metadata_hash(
+        metaplex_metadata: NftMetaplexMetadata,
+        uri_metadata: NftUriMetadata
+) -> str:
+    meta = {
+        "metaplex_metadata": dataclasses.asdict(metaplex_metadata),
+        "uri_metadata": dataclasses.asdict(uri_metadata)
+    }
 
-    def sha256(self) -> str:
-        return dict_hash.sha256(dataclasses.asdict(self))[:64]
+    return dict_hash.sha256(meta)[:64]
 
 
 __all__ = [
@@ -59,5 +61,5 @@ __all__ = [
     "NftChainData",
     "NftMetaplexMetadata",
     "NftUriMetadata",
-    "NftMetadata"
+    "metadata_hash"
 ]

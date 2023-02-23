@@ -2,9 +2,8 @@ import datetime
 import typing as tp
 
 from db.connection import get_db
-from entities import NftMetadata as INftMeta
-from entities.model import NftScamResponse
 
+from .dto import *
 from .table import NftMetadata
 
 
@@ -12,13 +11,13 @@ class NftMetadataRepository:
     def __init__(self):
         self.db = get_db()
 
-    def save_nft_metadata(self, metadata: INftMeta, result: NftScamResponse):
-        metaplex_metadata = metadata.metaplex_metadata
-        uri_metadata = metadata.uri_metadata
+    def save_nft_metadata(self, dto: CreateNftMetadataDto):
+        metaplex_metadata = dto.metaplex_metadata
+        uri_metadata = dto.uri_metadata
 
         nft = NftMetadata(
-            token_id=metadata.token_id,
-            hash=metadata.sha256(),
+            token_id=dto.token_id,
+            hash=dto.hash,
             update_authority=metaplex_metadata.update_authority,
             mint=metaplex_metadata.mint,
             title=metaplex_metadata.data.title,
@@ -33,20 +32,27 @@ class NftMetadataRepository:
             symbol=metaplex_metadata.data.symbol,
             external_uri=uri_metadata.external_uri,
             created_at=datetime.datetime.utcnow(),
-            predict_result=result.value
+            updated_at=datetime.datetime.utcnow(),
+            predict_result=dto.result.value
         )
 
         self.db.add(nft)
         self.db.commit()
 
-    def find_by_token_and_hash(self, token_id: str, meta_hash: str) -> tp.Optional[NftMetadata]:
+    def update_timestamp(self, dto: UpdateNftMetadataTimestampDto):
+        nft = self.find_by_token_and_hash(dto)
+        if nft is not None:
+            nft.updated_at = dto.time
+            self.db.commit()
+
+    def find_by_token_and_hash(self, dto: NftMetadataTokenHashDto) -> tp.Optional[NftMetadata]:
         return self.db \
             .query(NftMetadata.token_id, NftMetadata.hash) \
-            .filter_by(token_id=token_id, hash=meta_hash) \
+            .filter_by(token_id=dto.token_id, hash=dto.hash) \
             .first()
 
-    def exists(self, token_id: str, meta_hash: str) -> bool:
-        return self.find_by_token_and_hash(token_id, meta_hash) is not None
+    def exists(self, dto: NftMetadataTokenHashDto) -> bool:
+        return self.find_by_token_and_hash(dto) is not None
 
     def find_by_token_id(self, token_id: str) -> tp.List[NftMetadata]:
         return self.db \

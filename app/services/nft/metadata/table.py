@@ -21,6 +21,7 @@ class NftMetadata(Base):
     symbol = Column(String, nullable=True)
     external_uri = Column(String, nullable=True)
     created_at = Column(DateTime, server_default=text("now()"), nullable=False)
+    updated_at = Column(DateTime, server_default=text("now()"), nullable=False)
     predict_result = Column(String, nullable=False)
 
     def __repr__(self):
