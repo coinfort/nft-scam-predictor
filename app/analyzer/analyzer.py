@@ -20,7 +20,7 @@ def check_nft_token(
     metaplex_metadata = client.nft_metadata(token_id)
 
     if metaplex_metadata.is_err():
-        return NftScamResponse.METADATA_FETCHING_ERROR
+        return NftScamResponse.DATA_FETCHING_ERROR
 
     metaplex_metadata = metaplex_metadata.ok()
     uri_metadata = client.nft_uri_metadata(metaplex_metadata.data.uri)
