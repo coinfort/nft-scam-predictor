@@ -4,7 +4,8 @@ from analyzer.analyzer import check_nft_token
 from analyzer.model import NftScamClassifierModel
 from entities.model import NftScamResponse
 from solana_utils.rpc import Endpoint, SolanaRpcClient
-from validation.validation import is_valid_token_length, is_in_blacklist, is_in_whitelist
+from validation.validation import (is_in_blacklist, is_in_whitelist,
+                                   is_valid_token_length)
 
 model_file = "/opt/ml/model"
 model = NftScamClassifierModel(model_file, device="cpu")
