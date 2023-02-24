@@ -1,7 +1,7 @@
 import dataclasses
+import json
 import typing as tp
-
-import dict_hash
+import hashlib
 
 
 @dataclasses.dataclass
@@ -33,7 +33,7 @@ class NftMetaplexMetadata:
     data: NftChainData
     is_mutable: bool
     primary_sale_happened: bool
-    collection: NftCollectionReference
+    collection: tp.Optional[NftCollectionReference] = None
 
 
 @dataclasses.dataclass
@@ -47,12 +47,15 @@ def metadata_hash(
         metaplex_metadata: NftMetaplexMetadata,
         uri_metadata: NftUriMetadata
 ) -> str:
+    """
+    :return: MD5 hash of given metadata (32 symbols)
+    """
     meta = {
-        "metaplex_metadata": dataclasses.asdict(metaplex_metadata),
-        "uri_metadata": dataclasses.asdict(uri_metadata)
+        "metaplex_meta": dataclasses.asdict(metaplex_metadata),
+        "uri_meta": dataclasses.asdict(uri_metadata)
     }
-
-    return dict_hash.sha256(meta)[:64]
+    packed = json.dumps(meta).encode("utf-8")
+    return hashlib.md5(packed).digest().hex()
 
 
 __all__ = [
