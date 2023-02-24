@@ -40,10 +40,13 @@ class NftMetadataRepository:
         self.db.commit()
 
     def update_timestamp(self, dto: UpdateNftMetadataTimestampDto):
-        nft = self.find_by_token_and_hash(dto)
-        if nft is not None:
-            nft.updated_at = dto.time
-            self.db.commit()
+        self.db.query(NftMetadata).filter(
+            NftMetadata.token_id == dto.token_id,
+            NftMetadata.hash == dto.hash
+        ).update({
+            NftMetadata.updated_at: datetime.datetime.utcnow()
+        })
+        self.db.commit()
 
     def find_by_token_and_hash(self, dto: NftMetadataTokenHashDto) -> tp.Optional[NftMetadata]:
         return self.db \
