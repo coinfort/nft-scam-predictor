@@ -4,6 +4,11 @@ import dotenv
 from pydantic import BaseSettings
 
 
+class BertModelSettings(BaseSettings):
+    LOCATION = "/opt/ml/model"
+    DEVICE = "cpu"
+
+
 class Settings(BaseSettings):
     CHAINSTACK_NODE_URL: str
 
@@ -13,8 +18,10 @@ class Settings(BaseSettings):
     POSTGRES_DB: str
     POSTGRES_HOST: str
 
+    BERT_MODEL_SETTINGS: BertModelSettings = BertModelSettings()
+
     class Config:
-        env_file = "./.env"
+        env_file = ".env"
 
 
 dotenv.load_dotenv(Settings.Config.env_file)
