@@ -257,7 +257,9 @@ jobs:
     needs: [deploy-testing]
     runs-on: ubuntu-latest
     steps:
-        run: python3 tests/integration/tests.py ${{ env.INTEGRATION_TESTS_URL }} ${{ env.INTEGRATION_TESTS_API_KEY }}
+      - uses: actions/checkout@v3
+      - run: |
+          python3 tests/integration/tests.py ${{ env.INTEGRATION_TESTS_URL }} ${{ env.INTEGRATION_TESTS_API_KEY }}
 
   deploy-prod:
     if: github.ref == 'refs/heads/master'
