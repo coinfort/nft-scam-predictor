@@ -26,6 +26,14 @@ Resources:
       Dockerfile: Dockerfile
       DockerContext: ./app
       DockerTag: python3.9-v1
+    AutoPublishAlias: live
+
+    DeploymentPreference:
+      Type: Canary10Percent10Minutes
+      Alarms:
+        # A list of alarms that you want to monitor
+        - !Ref AliasErrorMetricGreaterThanZeroAlarm
+        - !Ref LatestVersionErrorMetricGreaterThanZeroAlarm
 
   ApplicationResourceGroup:
     Type: AWS::ResourceGroups::Group
