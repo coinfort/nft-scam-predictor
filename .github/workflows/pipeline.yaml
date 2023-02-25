@@ -16,6 +16,8 @@ env:
   S3_LOCAL_DESTINATION: ${{ secrets.S3_LOCAL_DESTINATION }}
   S3_ENV_SOURCE: ${{ secrets.S3_ENV_SOURCE }}
   S3_ENV_DESTINATION: ${{ secrets.S3_ENV_DESTINATION }}
+  INTEGRATION_TESTS_URL: ${{ secrets.INTEGRATION_TESTS_URL }}
+  INTEGRATION_TESTS_API_KEY: ${{ secrets.INTEGRATION_TESTS_API_KEY }}
   SAM_TEMPLATE: template.yaml
   TESTING_STACK_NAME: nft-scam-predictor-DEV
   TESTING_PIPELINE_EXECUTION_ROLE: arn:aws:iam::692666379301:role/aws-sam-cli-managed-dev-pipe-PipelineExecutionRole-2S5Y1C4C3A4V
@@ -83,7 +85,30 @@ jobs:
         with:
           python-version: '3.10'
       - uses: aws-actions/setup-sam@v2
-      - run: sam build --template ${SAM_TEMPLATE} --use-container
+
+      - name: Copy resources
+
+        uses: prewk/s3-cp-action@v2
+        with:
+          aws_access_key_id: ${{ env.PIPELINE_USER_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ env.PIPELINE_USER_SECRET_ACCESS_KEY }}
+          source: ${{ env.S3_RESOURCE_SOURCE }}
+          dest: ${{ env.S3_LOCAL_DESTINATION }}
+          aws_region: ${{ env.TESTING_REGION }}
+          flags: '--recursive --quiet'
+
+      - name: Copy environment
+        uses: prewk/s3-cp-action@v2
+        with:
+          aws_access_key_id: ${{ env.PIPELINE_USER_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ env.PIPELINE_USER_SECRET_ACCESS_KEY }}
+          source: ${{ env.S3_ENV_SOURCE }}
+          dest: ${{ env.S3_ENV_DESTINATION }}
+          aws_region: ${{ env.TESTING_REGION }}
+          flags: '--quiet'
+
+      - name: Build feature
+        run: sam build --template ${SAM_TEMPLATE} --use-container
 
       - name: Assume the testing pipeline user role
         uses: aws-actions/configure-aws-credentials@v1-node16
@@ -233,8 +258,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: |
-          # trigger the integration tests here
+      - name: Run integration tests
+        run: |
+          python3 tests/integration/tests.py ${INTEGRATION_TESTS_URL} ${INTEGRATION_TESTS_API_KEY}
 
   deploy-prod:
     if: github.ref == 'refs/heads/master'
