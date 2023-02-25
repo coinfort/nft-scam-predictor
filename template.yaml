@@ -29,11 +29,9 @@ Resources:
     AutoPublishAlias: live
 
     DeploymentPreference:
-      Type: Canary10Percent10Minutes
-      Alarms:
-        # A list of alarms that you want to monitor
-        - !Ref AliasErrorMetricGreaterThanZeroAlarm
-        - !Ref LatestVersionErrorMetricGreaterThanZeroAlarm
+      Type: AllAtOnce # Or Canary10Percent5Minutes, Linear10PercentEvery1Minute, ...
+      ProvisionedConcurrencyConfig:
+        ProvisionedConcurrentExecutions: 1
 
   ApplicationResourceGroup:
     Type: AWS::ResourceGroups::Group
