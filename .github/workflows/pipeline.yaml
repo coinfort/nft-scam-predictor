@@ -262,9 +262,25 @@ jobs:
         run: |
           python3 tests/integration/tests.py ${INTEGRATION_TESTS_URL} ${INTEGRATION_TESTS_API_KEY}
 
+  approve-prod-deploy:
+    if: github.ref == 'refs/heads/master'
+      needs: [integration-test]
+      runs-on: ubuntu-latest
+      steps:
+        - uses: trstringer/manual-approval@v1
+          with:
+            secret: ${{ github.TOKEN }}
+            approvers: olegggatttor,EgorBa,Danielto1404
+            minimum-approvals: 1
+            issue-title: "Deploying ${{ github.ref }}"
+            issue-body: "Please approve or deny the deployment of ${{ github.ref }}"
+            exclude-workflow-initiator-as-approver: false
+            additional-approved-words: '+'
+            additional-denied-words: '-'
+
   deploy-prod:
     if: github.ref == 'refs/heads/master'
-    needs: [integration-test]
+    needs: [approve-prod-deploy]
     runs-on: ubuntu-latest
     # Configure GitHub Action Environment to have a manual approval step before deployment to production
     # https://docs.github.com/en/actions/reference/environments
