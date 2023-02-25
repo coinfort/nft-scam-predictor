@@ -108,7 +108,7 @@ jobs:
           flags: '--quiet'
 
       - name: Build feature
-      - run: sam build --template ${SAM_TEMPLATE} --use-container
+        run: sam build --template ${SAM_TEMPLATE} --use-container
 
       - name: Assume the testing pipeline user role
         uses: aws-actions/configure-aws-credentials@v1-node16
