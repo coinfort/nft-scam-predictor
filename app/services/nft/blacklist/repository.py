@@ -9,6 +9,12 @@ class BlacklistNftRepository:
     def __init__(self, db=get_db()):
         self.db = db
 
+    def add_token_address(self, token_address: str):
+        self.db.add(BlacklistNft(
+           token_id=token_address
+        ))
+        self.db.commit()
+
     def find(self, token_id: str) -> tp.Optional[BlacklistNft]:
         return self.db.query(BlacklistNft.token_id).filter_by(token_id=token_id).first()
 

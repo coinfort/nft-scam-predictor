@@ -1,21 +1,36 @@
 import unittest
 import sys
 from common import get_predict
+from entities.model import NftScamResponse
 
 
 class TestNftScamPredictorIntegration(unittest.TestCase):
-    VALID_INPUT = "DDgpWvsHTiLG92jVQNLGGmk1BXTm4YLaukJGhEKUWFup" # ABC #2851
-    INVALID_INPUT = "123"
-    TEST_URL = "url"
-    TEST_API_KEY = "api_key"
+    VALID_INPUT = "DDgpWvsHTiLG92jVQNLGGmk1BXTm4YLaukJGhEKUWFup"
+    INVALID_INPUT = "DDgpWvsHTiLG92jVQNLGGmk1BXTm4YLaukJGhEKUWFu8"
+    SHORT_INPUT = "123"
+    TEST_URL = "url"  # put here url for local testing
+    TEST_API_KEY = "api_key"  # put here your api key for local testing
 
     def test_valid_input(self):
         response = get_predict(url=self.TEST_URL,
                                api_key=self.TEST_API_KEY,
                                body=self.VALID_INPUT)
         self.assertEqual(response, {
-            "result": "good",
+            "result": NftScamResponse.NOT_SCAM.value,
             "token_address": self.VALID_INPUT
+        })
+
+    def test_double_valid_input(self):
+        self.test_valid_input()
+        self.test_valid_input()
+
+    def test_short_input(self):
+        response = get_predict(url=self.TEST_URL,
+                               api_key=self.TEST_API_KEY,
+                               body=self.SHORT_INPUT)
+        self.assertEqual(response, {
+            "result": NftScamResponse.WRONG_INPUT.value,
+            "token_address": self.SHORT_INPUT
         })
 
     def test_invalid_input(self):
@@ -23,7 +38,7 @@ class TestNftScamPredictorIntegration(unittest.TestCase):
                                api_key=self.TEST_API_KEY,
                                body=self.INVALID_INPUT)
         self.assertEqual(response, {
-            "result": "invalid_input",
+            "result": NftScamResponse.DATA_FETCHING_ERROR.value,
             "token_address": self.INVALID_INPUT
         })
 
