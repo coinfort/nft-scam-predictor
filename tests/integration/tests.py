@@ -1,7 +1,6 @@
 import unittest
 import sys
 from common import get_predict
-from app.entities.model import NftScamResponse
 
 
 class TestNftScamPredictorIntegration(unittest.TestCase):
@@ -16,7 +15,7 @@ class TestNftScamPredictorIntegration(unittest.TestCase):
                                api_key=self.TEST_API_KEY,
                                body=self.VALID_INPUT)
         self.assertEqual(response, {
-            "result": NftScamResponse.NOT_SCAM.value,
+            "result": "good",
             "token_address": self.VALID_INPUT
         })
 
@@ -29,7 +28,7 @@ class TestNftScamPredictorIntegration(unittest.TestCase):
                                api_key=self.TEST_API_KEY,
                                body=self.SHORT_INPUT)
         self.assertEqual(response, {
-            "result": NftScamResponse.WRONG_INPUT.value,
+            "result": "invalid_input",
             "token_address": self.SHORT_INPUT
         })
 
@@ -38,7 +37,7 @@ class TestNftScamPredictorIntegration(unittest.TestCase):
                                api_key=self.TEST_API_KEY,
                                body=self.INVALID_INPUT)
         self.assertEqual(response, {
-            "result": NftScamResponse.DATA_FETCHING_ERROR.value,
+            "result": "data_fetching_error",
             "token_address": self.INVALID_INPUT
         })
 
