@@ -1,7 +1,7 @@
 import unittest
 import sys
 from common import get_predict
-from entities.model import NftScamResponse
+from app.entities.model import NftScamResponse
 
 
 class TestNftScamPredictorIntegration(unittest.TestCase):
