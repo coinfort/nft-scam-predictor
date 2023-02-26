@@ -266,6 +266,8 @@ jobs:
     if: github.ref == 'refs/heads/master'
     needs: [integration-test]
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
     steps:
       - uses: trstringer/manual-approval@v1
         with:
