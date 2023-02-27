@@ -15,8 +15,6 @@ def check_nft_token(
         client: SolanaRpcClient,
         token_id: str
 ) -> NftScamResponse:
-    result = NftScamResponse.WRONG_INPUT
-
     metaplex_metadata = client.nft_metadata(token_id)
 
     if metaplex_metadata.is_err():
@@ -35,6 +33,8 @@ def check_nft_token(
     if description is not None:
         is_scam = model.check_scam([description])[0]
         result = NftScamResponse.SCAM if is_scam else NftScamResponse.NOT_SCAM
+    else:
+        result = NftScamResponse.DATA_FETCHING_ERROR
 
     meta_hash = metadata_hash(metaplex_metadata, uri_metadata)
 
