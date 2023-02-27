@@ -15,7 +15,7 @@ class TestNftScamPredictorIntegration(unittest.TestCase):
                                api_key=self.TEST_API_KEY,
                                body=self.VALID_INPUT)
         self.assertEqual(response, {
-            "result": "good",
+            "result": "GOOD",
             "token_address": self.VALID_INPUT
         })
 
@@ -28,7 +28,7 @@ class TestNftScamPredictorIntegration(unittest.TestCase):
                                api_key=self.TEST_API_KEY,
                                body=self.SHORT_INPUT)
         self.assertEqual(response, {
-            "result": "invalid_input",
+            "result": "INVALID_INPUT",
             "token_address": self.SHORT_INPUT
         })
 
@@ -37,7 +37,7 @@ class TestNftScamPredictorIntegration(unittest.TestCase):
                                api_key=self.TEST_API_KEY,
                                body=self.INVALID_INPUT)
         self.assertEqual(response, {
-            "result": "data_fetching_error",
+            "result": "DATA_FETCHING_ERROR",
             "token_address": self.INVALID_INPUT
         })
 
