@@ -6,7 +6,7 @@ from config import settings
 from entities.model import NftScamResponse
 from solana_utils.rpc import Endpoint, SolanaRpcClient
 from validation.validation import (is_in_blacklist, is_in_whitelist,
-                                   is_valid_token_length)
+                                   is_valid_token_address)
 
 model = NftScamClassifierModel(
     model_path=settings.BERT_MODEL_SETTINGS.LOCATION,
@@ -20,12 +20,13 @@ def lambda_handler(event, _):
     token_address = event["body"]
     result = NftScamResponse.WRONG_INPUT
 
-    if is_in_blacklist(token_address):
-        result = NftScamResponse.SCAM
-    elif is_in_whitelist(token_address):
-        result = NftScamResponse.GOOD
-    elif is_valid_token_length(token_address):
-        result = check_nft_token(model, client, token_address)
+    if is_valid_token_address(token_address):
+        if is_in_blacklist(token_address):
+            result = NftScamResponse.SCAM
+        elif is_in_whitelist(token_address):
+            result = NftScamResponse.GOOD
+        else:
+            result = check_nft_token(model, client, token_address)
 
     return {
         "statusCode": 200,
