@@ -41,6 +41,15 @@ class TestNftScamPredictorIntegration(unittest.TestCase):
             "token_address": self.INVALID_INPUT
         })
 
+    def test_empty_input(self):
+        response = get_predict(url=self.TEST_URL,
+                               api_key=self.TEST_API_KEY,
+                               body=None)
+        self.assertEqual(response, {
+            "result": "INVALID_INPUT",
+            "token_address": None
+        })
+
 
 if __name__ == '__main__':
     TestNftScamPredictorIntegration.TEST_API_KEY = sys.argv.pop()
