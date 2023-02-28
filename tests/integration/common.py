@@ -1,7 +1,7 @@
 import requests
 
 
-def get_predict(*, url: str, api_key: str, body: str) -> dict:
+def get_predict(*, url: str, api_key: str, body) -> dict:
     headers = {'x-api-key': api_key}
     response = requests.post(
         url,
