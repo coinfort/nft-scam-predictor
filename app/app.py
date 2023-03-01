@@ -22,9 +22,9 @@ def lambda_handler(event, _):
 
     if is_valid_token_address(token_address):
         if is_in_blacklist(token_address):
-            result = NftScamResponse.SCAM
+            result = NftScamResponse.SUSPECTED_MALICIOUS
         elif is_in_whitelist(token_address):
-            result = NftScamResponse.GOOD
+            result = NftScamResponse.CHECKS_PASSED
         else:
             result = check_nft_token(model, client, token_address)
 
