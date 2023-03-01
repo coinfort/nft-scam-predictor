@@ -32,7 +32,7 @@ def check_nft_token(
 
     if description is not None:
         is_scam = model.check_scam([description])[0]
-        result = NftScamResponse.SCAM if is_scam else NftScamResponse.GOOD
+        result = NftScamResponse.SUSPECTED_MALICIOUS if is_scam else NftScamResponse.CHECKS_PASSED
     else:
         result = NftScamResponse.DATA_FETCHING_ERROR
 

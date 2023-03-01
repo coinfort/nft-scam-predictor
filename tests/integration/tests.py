@@ -15,7 +15,7 @@ class TestNftScamPredictorIntegration(unittest.TestCase):
                                api_key=self.TEST_API_KEY,
                                body=self.VALID_INPUT)
         self.assertEqual(response, {
-            "result": "GOOD",
+            "result": "CHECKS_PASSED",
             "token_address": self.VALID_INPUT
         })
 

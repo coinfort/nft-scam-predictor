@@ -1,7 +1,7 @@
 import dataclasses
+import hashlib
 import json
 import typing as tp
-import hashlib
 
 
 @dataclasses.dataclass

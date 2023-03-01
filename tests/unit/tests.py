@@ -19,10 +19,10 @@ class TestNftScamPredictorIntegration(unittest.TestCase):
     client = SolanaRpcClient.from_endpoint(endpoint=Endpoint.Mainnet)
 
     def test_not_scam_input(self):
-        self.assertEqual(NftScamResponse.GOOD, check_nft_token(self.model, self.client, self.NOT_SCAM_ADDRESS))
+        self.assertEqual(NftScamResponse.CHECKS_PASSED, check_nft_token(self.model, self.client, self.NOT_SCAM_ADDRESS))
 
     def test_scam_input(self):
-        self.assertEqual(NftScamResponse.SCAM, check_nft_token(self.model, self.client, self.SCAM_ADDRESS))
+        self.assertEqual(NftScamResponse.SUSPECTED_MALICIOUS, check_nft_token(self.model, self.client, self.SCAM_ADDRESS))
 
     def test_error_data(self):
         self.assertEqual(
