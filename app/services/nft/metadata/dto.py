@@ -1,7 +1,7 @@
 import dataclasses
 import datetime
 
-from entities.model import NftScamResponse
+from entities.model import NftScamResponseType
 from entities.nft.metadata import NftMetaplexMetadata, NftUriMetadata
 
 
@@ -20,7 +20,7 @@ class UpdateNftMetadataTimestampDto(NftMetadataTokenHashDto):
 class CreateNftMetadataDto(NftMetadataTokenHashDto):
     metaplex_metadata: NftMetaplexMetadata
     uri_metadata: NftUriMetadata
-    result: NftScamResponse
+    result: NftScamResponseType
 
 
 __all__ = [
