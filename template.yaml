@@ -20,7 +20,7 @@ Resources:
         Inference:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
-            Path: /nft_scam_classify
+            Path: solana/v0/mainnet/token/check
             Method: post
     Metadata:
       Dockerfile: Dockerfile
