@@ -2,7 +2,7 @@ import datetime
 
 from analyzer.model import NftScamClassifierModel
 from entities import NftUriMetadata, metadata_hash
-from entities.model import NftScamResponse
+from entities.model import NftScamResponseType
 from services.nft import nft_metadata_repository
 from services.nft.metadata.dto import (CreateNftMetadataDto,
                                        NftMetadataTokenHashDto,
@@ -14,11 +14,11 @@ def check_nft_token(
         model: NftScamClassifierModel,
         client: SolanaRpcClient,
         token_id: str
-) -> NftScamResponse:
+) -> NftScamResponseType:
     metaplex_metadata = client.nft_metadata(token_id)
 
     if metaplex_metadata.is_err():
-        return NftScamResponse.DATA_FETCHING_ERROR
+        return NftScamResponseType.DATA_FETCHING_ERROR
 
     metaplex_metadata = metaplex_metadata.ok()
     uri_metadata = client.nft_uri_metadata(metaplex_metadata.data.uri)
@@ -32,9 +32,9 @@ def check_nft_token(
 
     if description is not None:
         is_scam = model.check_scam([description])[0]
-        result = NftScamResponse.SUSPECTED_MALICIOUS if is_scam else NftScamResponse.CHECKS_PASSED
+        result = NftScamResponseType.SUSPECTED_MALICIOUS if is_scam else NftScamResponseType.CHECKS_PASSED
     else:
-        result = NftScamResponse.DATA_FETCHING_ERROR
+        result = NftScamResponseType.DATA_FETCHING_ERROR
 
     meta_hash = metadata_hash(metaplex_metadata, uri_metadata)
 
