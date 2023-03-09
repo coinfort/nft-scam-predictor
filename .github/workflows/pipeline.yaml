@@ -12,6 +12,12 @@ on:
 env:
   PIPELINE_USER_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   PIPELINE_USER_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  S3_RESOURCE_SOURCE: ${{ secrets.S3_RESOURCE_SOURCE }}
+  S3_LOCAL_DESTINATION: ${{ secrets.S3_LOCAL_DESTINATION }}
+  S3_ENV_SOURCE: ${{ secrets.S3_ENV_SOURCE }}
+  S3_ENV_DESTINATION: ${{ secrets.S3_ENV_DESTINATION }}
+  INTEGRATION_TESTS_URL: ${{ secrets.INTEGRATION_TESTS_URL }}
+  INTEGRATION_TESTS_API_KEY: ${{ secrets.INTEGRATION_TESTS_API_KEY }}
   SAM_TEMPLATE: template.yaml
   TESTING_STACK_NAME: nft-scam-predictor-DEV
   TESTING_PIPELINE_EXECUTION_ROLE: arn:aws:iam::632825401508:role/aws-sam-cli-managed-nft-scam-PipelineExecutionRole-1J7NJRFM8IBYL
@@ -40,9 +46,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: aws-actions/setup-sam@v2
+      - uses: actions/setup-python@v4
         with:
-          use-installer: true
+          python-version: '3.10'
+      - uses: aws-actions/setup-sam@v2
 
       - name: Assume the testing pipeline user role
         uses: aws-actions/configure-aws-credentials@v1-node16
@@ -74,10 +81,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: aws-actions/setup-sam@v2
+      - uses: actions/setup-python@v4
         with:
-          use-installer: true
-      - run: sam build --template ${SAM_TEMPLATE} --use-container
+          python-version: '3.10'
+      - uses: aws-actions/setup-sam@v2
+
+      - name: Copy resources
+
+        uses: prewk/s3-cp-action@v2
+        with:
+          aws_access_key_id: ${{ env.PIPELINE_USER_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ env.PIPELINE_USER_SECRET_ACCESS_KEY }}
+          source: ${{ env.S3_RESOURCE_SOURCE }}
+          dest: ${{ env.S3_LOCAL_DESTINATION }}
+          aws_region: ${{ env.TESTING_REGION }}
+          flags: '--recursive --quiet'
+
+      - name: Copy environment
+        uses: prewk/s3-cp-action@v2
+        with:
+          aws_access_key_id: ${{ env.PIPELINE_USER_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ env.PIPELINE_USER_SECRET_ACCESS_KEY }}
+          source: ${{ env.S3_ENV_SOURCE }}
+          dest: ${{ env.S3_ENV_DESTINATION }}
+          aws_region: ${{ env.TESTING_REGION }}
+          flags: '--quiet'
+
+      - name: Build feature
+        run: sam build --template ${SAM_TEMPLATE} --use-container
 
       - name: Assume the testing pipeline user role
         uses: aws-actions/configure-aws-credentials@v1-node16
@@ -107,9 +138,32 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: aws-actions/setup-sam@v2
+      - uses: actions/setup-python@v4
         with:
-          use-installer: true
+          python-version: '3.10'
+      - uses: aws-actions/setup-sam@v2
+
+      - name: Copy resources
+
+        uses: prewk/s3-cp-action@v2
+        with:
+          aws_access_key_id: ${{ env.PIPELINE_USER_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ env.PIPELINE_USER_SECRET_ACCESS_KEY }}
+          source: ${{ env.S3_RESOURCE_SOURCE }}
+          dest: ${{ env.S3_LOCAL_DESTINATION }}
+          aws_region: ${{ env.TESTING_REGION }}
+          flags: '--recursive --quiet'
+
+      - name: Copy environment
+
+        uses: prewk/s3-cp-action@v2
+        with:
+          aws_access_key_id: ${{ env.PIPELINE_USER_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ env.PIPELINE_USER_SECRET_ACCESS_KEY }}
+          source: ${{ env.S3_ENV_SOURCE }}
+          dest: ${{ env.S3_ENV_DESTINATION }}
+          aws_region: ${{ env.TESTING_REGION }}
+          flags: '--quiet'
 
       - name: Build resources
         run: sam build --template ${SAM_TEMPLATE} --use-container
@@ -168,9 +222,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: aws-actions/setup-sam@v2
+      - uses: actions/setup-python@v4
         with:
-          use-installer: true
+          python-version: '3.10'
+      - uses: aws-actions/setup-sam@v2
       - uses: actions/download-artifact@v2
         with:
           name: packaged-testing.yaml
@@ -203,21 +258,41 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: |
-          # trigger the integration tests here
+      - name: Run integration tests
+        run: |
+          python3 tests/integration/tests.py ${INTEGRATION_TESTS_URL} ${INTEGRATION_TESTS_API_KEY}
+
+  approve-prod-deploy:
+    if: github.ref == 'refs/heads/master'
+    needs: [integration-test]
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: olegggatttor,EgorBa,Danielto1404
+          minimum-approvals: 1
+          issue-title: "Deploying ${{ github.ref }}"
+          issue-body: "Please approve or deny the deployment of ${{ github.ref }}"
+          exclude-workflow-initiator-as-approver: false
+          additional-approved-words: '+'
+          additional-denied-words: '-'
 
   deploy-prod:
     if: github.ref == 'refs/heads/master'
-    needs: [integration-test]
+    needs: [approve-prod-deploy]
     runs-on: ubuntu-latest
     # Configure GitHub Action Environment to have a manual approval step before deployment to production
     # https://docs.github.com/en/actions/reference/environments
     # environment: <configured-environment>
     steps:
       - uses: actions/checkout@v3
-      - uses: aws-actions/setup-sam@v2
+      - uses: actions/setup-python@v4
         with:
-          use-installer: true
+          python-version: '3.10'
+      - uses: aws-actions/setup-sam@v2
       - uses: actions/download-artifact@v2
         with:
           name: packaged-prod.yaml
