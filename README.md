@@ -1,7 +1,7 @@
 ## CoinFort - NFT SCAM Predictor
 Our team provides an API for NFT validation.
 
-[Some info about our product and team.](hhttps://docs.google.com/presentation/d/1c37upNhv2XQjR1a2YZlRpqz48NyfdsdsUxV7KOokhbw/edit?usp=sharing)
+[Some info about our product and team.](https://docs.google.com/presentation/d/1c37upNhv2XQjR1a2YZlRpqz48NyfdsdsUxV7KOokhbw)
 
 ## Testing
 
