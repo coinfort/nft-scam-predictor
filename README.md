@@ -1,4 +1,4 @@
-## CoinFort - NFT SCAM Predictor
+## CoinFort - NFT SCAM Detector
 Our team provides an API for NFT validation using machine learning algorithms. Our service classify NFTs whether it refers to SCAM or not.
 Also we have NFTs address validation. These methods will help you to be safe when buying NFTs.
 
